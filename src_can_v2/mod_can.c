@@ -334,7 +334,8 @@ static mp_obj_t esp32_can_init_helper(esp32_can_obj_t *self, size_t n_args, cons
 
     self->extframe = args[ARG_extframe].u_bool;
     if (args[ARG_auto_restart].u_bool) {
-        mp_raise_NotImplementedError("Auto-restart not supported");
+        //mp_raise_NotImplementedError("Auto-restart not supported");
+        mp_raise_NotImplementedError(MP_ERROR_TEXT("Auto-restart not supported"));
     }
     self->config->filter = f_config; // TWAI_FILTER_CONFIG_ACCEPT_ALL(); //
 
@@ -394,13 +395,15 @@ static mp_obj_t esp32_can_make_new(const mp_obj_type_t *type, size_t n_args, siz
     // check arguments
     mp_arg_check_num(n_args, n_kw, 1, MP_OBJ_FUN_ARGS_MAX, true);
     if (mp_obj_is_int(args[0]) != true) {
-        mp_raise_TypeError("bus must be a number");
+        //mp_raise_TypeError("bus must be a number");
+        mp_raise_TypeError(MP_ERROR_TEXT("bus must be a number"));
     }
 
     // work out port
     mp_uint_t can_idx = mp_obj_get_int(args[0]);
     if (can_idx > SOC_TWAI_CONTROLLER_NUM - 1) {
-        mp_raise_msg_varg(&mp_type_ValueError, "out of CAN controllers:%d", SOC_TWAI_CONTROLLER_NUM);
+        //mp_raise_msg_varg(&mp_type_ValueError, "out of CAN controllers:%d", SOC_TWAI_CONTROLLER_NUM);
+        mp_raise_msg_varg(&mp_type_ValueError, MP_ERROR_TEXT("out of CAN controllers:%d"), SOC_TWAI_CONTROLLER_NUM);
     }
 
     esp32_can_obj_t *self = &esp32_can_obj;
@@ -430,7 +433,8 @@ static mp_obj_t esp32_can_make_new(const mp_obj_type_t *type, size_t n_args, siz
 static mp_obj_t esp32_can_init(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     esp32_can_obj_t *self = MP_OBJ_TO_PTR(pos_args[0]);
     if (self->config->initialized) {
-        mp_raise_msg(&mp_type_RuntimeError, "Device is already initialized");
+        //mp_raise_msg(&mp_type_RuntimeError, "Device is already initialized");
+        mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("Device is already initialized"));
         return mp_const_none;
     }
     return esp32_can_init_helper(self, n_args - 1, pos_args + 1, kw_args);
@@ -441,7 +445,8 @@ static MP_DEFINE_CONST_FUN_OBJ_KW(esp32_can_init_obj, 4, esp32_can_init);
 static mp_obj_t esp32_can_deinit(const mp_obj_t self_in) {
     const esp32_can_obj_t *self = MP_OBJ_TO_PTR(self_in);
     if (self->config->initialized != true) {
-        mp_raise_msg(&mp_type_RuntimeError, "Device is not initialized");
+        //mp_raise_msg(&mp_type_RuntimeError, "Device is not initialized");
+        mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("Device is not initialized"));
         return mp_const_none;
     }
     can_deinit(self);
@@ -549,7 +554,8 @@ static mp_obj_t esp32_can_send(size_t n_args, const mp_obj_t *pos_args, mp_map_t
     mp_obj_t *items;
     mp_obj_get_array(args[ARG_data].u_obj, &length, &items);
     if (length > CAN_MAX_DATA_FRAME) {
-        mp_raise_ValueError("CAN data field too long");
+        //mp_raise_ValueError("CAN data field too long");
+        mp_raise_ValueError(MP_ERROR_TEXT("CAN data field too long"));
     }
     tx_msg.data_length_code = length;
     tx_msg.flags = (args[ARG_rtr].u_bool ? TWAI_MSG_FLAG_RTR : TWAI_MSG_FLAG_NONE);
@@ -607,7 +613,8 @@ static mp_obj_t esp32_can_send(size_t n_args, const mp_obj_t *pos_args, mp_map_t
 
         return mp_const_none;
     } else {
-        mp_raise_msg(&mp_type_RuntimeError, "Device is not ready");
+        //mp_raise_msg(&mp_type_RuntimeError, "Device is not ready");
+        mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("Device is not ready"));
     }
 }
 static MP_DEFINE_CONST_FUN_OBJ_KW(esp32_can_send_obj, 3, esp32_can_send);
@@ -711,7 +718,8 @@ static mp_obj_t esp32_can_set_filters(size_t n_args, const mp_obj_t *pos_args, m
     const int can_idx = args[ARG_bank].u_int;
 
     if (can_idx != 0) {
-        mp_raise_msg_varg(&mp_type_ValueError, "Bank (%d) doesn't exist", can_idx);
+        //mp_raise_msg_varg(&mp_type_ValueError, "Bank (%d) doesn't exist", can_idx);
+        mp_raise_msg_varg(&mp_type_ValueError, MP_ERROR_TEXT("Bank (%d) doesn't exist"), can_idx);
     }
 
     size_t len;
@@ -723,7 +731,8 @@ static mp_obj_t esp32_can_set_filters(size_t n_args, const mp_obj_t *pos_args, m
     uint32_t mask = mp_obj_get_int(params[1]); // FIXME: Overflow in case 0xFFFFFFFF for mask
     if (mode == FILTER_RAW_SINGLE || mode == FILTER_RAW_DUAL) {
         if (len != 2) {
-            mp_raise_ValueError("params must be a 2-values list");
+            //mp_raise_ValueError("params must be a 2-values list");
+            mp_raise_ValueError(MP_ERROR_TEXT("params must be a 2-values list"));
         }
         self->config->filter.single_filter = (mode == FILTER_RAW_SINGLE);
         self->config->filter.acceptance_code = id;
@@ -734,7 +743,8 @@ static mp_obj_t esp32_can_set_filters(size_t n_args, const mp_obj_t *pos_args, m
         // Check if bank is allowed
         int bank = 0;
         if (bank > ((self->extframe && self->config->filter.single_filter) ? 0 : 1)) {
-            mp_raise_ValueError("CAN filter parameter error");
+            //mp_raise_ValueError("CAN filter parameter error");
+            mp_raise_ValueError(MP_ERROR_TEXT("CAN filter parameter error"));
         }
         uint32_t preserve_mask;
         int addr = 0;
