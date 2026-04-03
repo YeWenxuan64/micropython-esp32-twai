@@ -362,9 +362,9 @@ static mp_obj_t esp32_can_init_helper(esp32_can_obj_t *self, size_t n_args, cons
     }
 
     // Always initialize singleton timing if not done yet (for first use)
-    if (can_config.timing.brp == 0) {
-        can_config.timing = get_timing_config(500000); // Default 500k timing for singleton
-    }
+    //if (can_config.timing.brp == 0) {
+    //    can_config.timing = get_timing_config(500000); // Default 500k timing for singleton
+    //}
 
     mp_printf(&mp_plat_print, "CAN: TIMING\n");
     mp_printf(&mp_plat_print, "CAN: timing brp=%lu\n", self->config->timing.brp);
@@ -409,11 +409,11 @@ static mp_obj_t esp32_can_make_new(const mp_obj_type_t *type, size_t n_args, siz
     esp32_can_obj_t *self = &esp32_can_obj;
     self->status.state = STOPPED;
     if (!self->config->initialized || n_args > 1 || n_kw > 0) {
-        if (self->config->initialized) {
+        //if (self->config->initialized) {
             // The caller is requesting a reconfiguration of the hardware
             // this can only be done if the hardware is in init mode
-            can_deinit(self);
-        }
+        can_deinit(self);
+        //}
         self->tx_callback = mp_const_none;
         self->rx_callback = mp_const_none;
         self->irq_handler = NULL;
