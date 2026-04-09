@@ -100,6 +100,13 @@ make submodules
 idf.py -D MICROPY_BOARD=ESP32_GENERIC_S3 -D MICROPY_BOARD_VARIANT=SPIRAM_OCT -D CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y -D USER_C_MODULES="../../../../micropython-esp32-twai/src_can_v2/micropython.cmake" build
 ```
 
+### Merge firmware
+```bash
+# enter the build folder
+# then specify the chip name to merge binary files
+cd build
+esptool.py --chip esp32s3 merge_bin -o my_firmware.bin 0x0 bootloader/bootloader.bin 0x8000 partition_table/partition-table.bin 0x10000 micropython.bin
+```
 
 ## Usage Example
 
