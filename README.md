@@ -103,10 +103,13 @@ idf.py -D MICROPY_BOARD=ESP32_GENERIC_S3 -D MICROPY_BOARD_VARIANT=SPIRAM_OCT -D 
 ### Merge firmware
 ```bash
 # enter the build folder
-# then specify the chip name to merge binary files
+# specify the chip name to merge binary files
 cd build
 esptool.py --chip esp32s3 merge_bin -o my_firmware.bin 0x0 bootloader/bootloader.bin 0x8000 partition_table/partition-table.bin 0x10000 micropython.bin
 ```
+
+you can find the firmware `my_firmware.bin` in the the build folder which could be flash with thonny.
+
 
 ## Usage Example
 
