@@ -191,3 +191,9 @@ Our solution:
 
 The timing calculation formula: `Bitrate = APB_CLK_FREQ / (BRP * (1 + tseg_1 + tseg_2))`  
 Where APB_CLK_FREQ = 40MHz for ESP32, BRP = Baud Rate Prescaler, tseg_1/tseg_2 = Time segments
+
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+Copyright © 2019 Musumeci Salvatore, 2021 Ihor Nehrutsa, 2022 Yuriy Makarov, 2026 YeWenxuan
